@@ -1,0 +1,152 @@
+.leftDiv{
+	background-color:#ddffdd;
+	margin-left:5%;
+	width:20%;
+	float:left;
+	text-align:center;
+}
+.topDiv{
+	width:70%;
+	height:100px;
+	float:left;
+	background-color:#ffdddd;
+	/*font-size:0px;去除inline-block带来的间距，虽然这个也可以，还是统一用下面这个吧*/
+	letter-spacing:-5px;
+}
+.bottomDiv{
+	margin-left:5%;
+	width:90%;
+	float:left;
+	font-size:13px;
+	background-color:#bbdddd;
+	line-height:150%;
+}
+.about{
+	margin:10px;
+	margin-bottom:5px;
+}
+.copyright{
+	margin-top:0px;
+	margin-left:10px;
+	margin-right:10px;
+	padding-top:5px;
+	text-align:center;
+	border-top:1px solid #999999;
+}
+.topDiv>div{
+	display:inline-block;
+	width:2%;
+	height:100px;
+	vertical-align:top;
+	z-index:-1;
+}
+.topDiv>div:hover{
+	cursor:pointer;
+	background-color:#ff8888;
+}
+.topDiv>div:active{
+	background-color:#ff6666;
+}
+.preDiv{
+	background-position:50%;
+	background-repeat:no-repeat;
+}
+.nextDiv{
+	background-position:50%;
+	background-repeat:no-repeat;
+}
+.navul{
+	margin:0px;
+	padding:0px;
+	width:96%;
+	display:inline-block;
+}
+.navli{
+	letter-spacing:0px;
+	list-style-type:none;
+	margin:0px;
+	display:none;
+	height:100px;
+	width:25%;
+	font-family:微软雅黑;
+	font-size:20px;
+	font-weight:800;
+	text-align:center;
+	line-height:100px;
+}
+.navli.selected{
+	background-color:#ffaaaa;
+}
+.navli:hover{
+	background-color:#ff8888;
+	cursor:pointer;
+}
+.navli:active{
+	background-color:#ff6666;
+}
+.navli.show{
+	display:inline-block;
+}
+#MainFrame{
+	float:left;
+	background-color:#ddddff;
+	width:70%;
+	border:none;
+}
+#LeftFrame{
+	/*background-image:url("../Images/LeftFrameBG.png");*/
+	background-color:#ddffdd;
+	width:100%;
+	border:none;
+}
+#logo{
+	margin-top:25px;
+	width:75%;
+}
+#logo:hover{
+	cursor:pointer;
+}
+#name{
+	font-family:微软雅黑;
+	background-color:#55ff77;
+}
+.upToTop{
+	position:absolute;
+	width:40px;
+	height:40px;
+	left:95%;
+	background-image:url("../Images/upToTopBG.gif");
+	background-position:top left;
+}
+.upToTop:hover{
+	background-position-y:-40px;
+}
+.lanArea{
+	display:none;
+	position:absolute;
+	height:81px;
+	width:110px;
+}
+.language{
+	margin:20px;
+	border:1px solid #444444;
+	background-color:#ccffcc;
+}
+.language>div{
+	padding:1px;
+}
+.language .selected{
+	background-color:#88ff88;
+}
+.language>div:hover{
+	background-color:#66ff66;
+	cursor:pointer;
+}
+.language>div:active{
+	background-color:#44ff44;
+}
+.Chinese{
+	border-top:1px solid #444444;
+}
+
+

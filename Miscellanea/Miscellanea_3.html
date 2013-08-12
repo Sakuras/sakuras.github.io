@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Miscellanea_3</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>通过流加载HTML到浏览器控件</h1>
+		<p>想要在浏览器页面中加载一个自己指定的页面，一把来说只要在Navigate函数中给出路径就可以了。但是有时候，要加载的页面保存在资源文件里。这时候加载就要费些事情。</p>
+		<p>项目中需要一个好看的界面，好吧，一般来说delphi有些第三方控件可以满足这种需求。但是，我恨第三方！不要第三方！已经2次遇到过由于使用了第三方控件导致莫名崩溃的问题了。<br/>
+		HTML+CSS的布局方式如此的优美，让我忍不住要把界面写成页面的形式，然后通过浏览器空间展示在界面上。</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+use
+  ..., ActiveX;
+
+...
+
+procedure TForm1.LoadControlHtml;
+var
+  HtmlStream: TMemoryStream;
+  ResStream: TResourceStream;
+  PersistStreamInit: IPersistStreamInit;
+  StreamIntf: IStream;
+  StreamAdapter: TStreamAdapter;
+begin
+  ResStream := TResourceStream.create(HInstance, 'HtmlResource', RT_RCDATA);
+  HtmlStream := TMemoryStream(ResStream);
+  HtmlStream.Position := 0;
+  PersistStreamInit := EwbCore1.Document as IPersistStreamInit;
+  StreamAdapter := TStreamAdapter.Create(HtmlStream);
+  PersistStreamInit.Load(StreamAdapter);
+  FControlHtmlLoaded := True;
+  HtmlStream.Free;
+end;
+			</textarea>
+		</div>
+		<p>第2行，别忘了添加ActiveX单元。<br/>
+		第14行，HtmlResource是自己加资源文件时定义的名字。<br/>
+		第17行，EwbCore是浏览器控件的一种，好吧我承认是个第三方~大家还是用WebBrowser吧。<br/>
+		第20行，加载代码执行完后设置布尔量为真。</p>
+		<p>要注意的是，不能直接在FormShow里面的直接调用该方法来加载页面，这样会报AV错误，你问我为什么？我也不知道，但是有办法解决。</p>
+		<p>我们需要在FormShow或者FormCreate里先导航到“about:blank”。等这个导航的DocumentComplete完成了，再调用上述方法。这也就是为什么我需要一个布尔量来标识是否已经执行过加载的原因了。</p>
+		<p>大概先导航一下，能够初始化一些什么~就可以从流中加载了吧，有达人知道为什么的，请联系我哦。</p>
+		<p>P.S. 项目中碰到俩次由于第三方控件导致莫名崩溃的问题：<br/>
+		1.Dev的TdxLayoutControl，当时是IE下不崩溃，搜狗下奔溃~dt死我了，好在是项目初期，发现的容易，果断去掉它，自己仔细点排版。<br/>
+		2.Jv的TJvGifAnimator，这个东东导致IE下有时候崩溃，有时候又没事~可怜我是一行一行的删代码排查，终于找到它了，果断去掉就ok了。</p>
+	</body>
+</html>

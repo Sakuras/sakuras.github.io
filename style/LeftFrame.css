@@ -1,0 +1,26 @@
+#info{
+	margin:15px;
+	text-align:left;
+	text-indent:2em;
+	line-height:150%;
+}
+.listul{
+	padding:0px;
+}
+.listli{
+	padding-left:10%;
+	list-style-type:none;
+	font-family:Verdana;
+	line-Height:150%;
+}
+.listli.selected{
+	background-color:#88ff88;
+}
+.listli:hover{
+	background-color:#66ff66;
+	cursor:pointer;
+}
+.listli:active{
+	background-color:#44ff44;
+}
+

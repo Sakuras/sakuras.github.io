@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HTML_1</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>HTML文档树简单介绍</h1>
+		<p>HTML DOM 定义了访问和操作HTML文档的标准方法。</p>
+		<p>DOM 把文档解释为带有元素，属性和文本的树的结构。</p>
+
+		<p class="example">例1：给出下面代码所表示的DOM结构。</p>
+		<p class="title">HTMLExample1.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<html>
+  <head>
+    <title>文档标题</title>
+  </head>
+  <body>
+    <a href="www.Sakuras.com">我的链接</a>
+    <h1>我的标题</h1>
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p>上面这个简单的文档，对应如下的文档树（Document Object Model):</p>
+		<p>
+			<img src="../images/HTMLExample1Image1.gif" />
+		</p>
+		<p>我们可以看到，所有的标签，属性，文本都对应着一个节点，通过访问这些节点，我们就可以访问到所有的标签，属性和文本。</p>
+		<p>其中HTML标签对应<span>元素节点</span>，属性对应<span>属性节点</span>，文本对应<span>文本节点</span>。</p>
+		<p>当然，如果有注释的话，就对应<span>注释节点</span>了。</p>
+		<p>值得注意的是，在根元素（根节点）之上还有一个节点，它代表着整个文档，是一个<span>文档节点</span>。</p>
+		<p>关于文档节点，我们在访问文档内的iframe时要特别注意，每个iframe都有自己的文档节点，千万不要因为忽略它而导致无法正确找到元素哦。</p>
+
+		<p class="summary">好啦，这一节就到这里，我们来总结一下：</p>
+		<ul class="summary">
+			<li>每一个HTML成分都是一个节点。</li>
+			<li>节点按类型可分为文档节点，元素节点，属性节点和注释节点。</li>
+			<li>节点之间有着树状的联系关系。</li>
+			<li>根节点有且只有一个。</li>
+		</ul>
+		<div class="bpn">
+			<div class="pre" style="display:none"></div>
+			<div class="next" onclick="subFrameNav('HTML', 2)"></div>
+		</div>
+	</body>
+</html>

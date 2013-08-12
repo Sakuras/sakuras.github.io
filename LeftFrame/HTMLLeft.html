@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HTMLLeft</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/LeftFrame.css" />
+		<script src="../Js/LeftFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<div display="none">
+			<a id="HTML_1" href="../HTML/HTML_1.html" target="MainFrame"></a>
+			<a id="HTML_2" href="../HTML/HTML_2.html" target="MainFrame"></a>
+			<a id="HTML_3" href="../HTML/HTML_3.html" target="MainFrame"></a>
+			<a id="HTML_4" href="../HTML/HTML_4.html" target="MainFrame"></a>
+			<a id="HTML_5" href="../HTML/HTML_5.html" target="MainFrame"></a>
+		</div>
+		<ul class="listul" id="listul">
+			<li class="listli selected" onclick="subFrameNav('HTML', 1);">HTML DOM简介</li>
+			<li class="listli" onclick="subFrameNav('HTML', 2);">HTMLDocument对象</li>
+			<li class="listli" onclick="subFrameNav('HTML', 3);">根据上下文访问节点</li>
+			<li class="listli" onclick="subFrameNav('HTML', 4);">框架内节点的访问</li>
+			<li class="listli" onclick="subFrameNav('HTML', 5);">元素位置与大小</li>
+		</ul>
+	</body>
+</html> 

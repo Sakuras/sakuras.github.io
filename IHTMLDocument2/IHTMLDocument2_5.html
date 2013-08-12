@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>IHTMLDocument2_4</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>页面中元素js事件的hook</h1>
+		<p>上一节学习了javascript相关的操作，能够自在的控制js，就能很大程度上控制页面了。</p>
+		<p>考虑以下情况，用户点击页面的按钮调用js，我们希望根据主程序内的逻辑，来决定是否该让js得到执行。这样就需要用到hook的技术。</p>
+
+		<p class="example">例10：世萌投票开始了，下面是一个投票的页面。我们要做点小手脚，让你感兴趣的角色之外的投票都失效！当然，你感兴趣的角色是动态的变量，它取决主程序中ComboBox1内的值。</p>
+		<p>
+			<img src="../Images/IHTMLDocument2Example10Image1.png" />
+		</p>
+		<p class="title">IHTMLDocument2Example10/testPage.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>testPage</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+    <script type="text/javascript">
+      function Sakuras()
+      {
+        var oRadios = document.getElementsByName("character");
+        var selectedRadio;
+        for (var i = 0; i <= oRadios.length - 1; i++)
+        {
+          selectedRadio = oRadios[i];
+          if (selectedRadio.checked)
+          {
+            break;
+          } 
+        }
+        var oSpan = document.getElementById(selectedRadio.value);
+        var iCount = parseInt(oSpan.innerText) + 1;
+        oSpan.innerText = iCount;
+      }
+    </script>
+    <input type="radio" name="character" value="misakamikoto" checked="checked" />
+    御坂美琴 <span id="misakamikoto">0</span> 票<br/>
+    <input type="radio" name="character" value="yuukiasuna" />
+    結城アスナ <span id="yuukiasuna">0</span> 票<br/>
+    <input type="radio" name="character" value="nakanoazusa" />
+    中野梓 <span id="nakanoazusa">0</span> 票<br/>
+    <input id="Sakuras" value="点我投票" type="button" onclick="Sakuras();" />
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p class="explain">解释：本题要求根据主程序里ComboBox1里的值来决定是否让页面中的按钮点击得以正常执行。我们的主程序界面如下。</p>
+		<p>
+			<img src="../Images/IHTMLDocument2Example10Image2.png" />
+		</p>
+		<p class="explain">当选中「全員大好き」的时候，代表你都喜欢，就不阻止js的执行。当选择某一个角色名的时候，则只有对该角色的投票得到认可，其他的都予以阻止。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>找到“点我投票”的按钮元素。</li>
+			<li>给它的onclick事件装上钩子（hook）。</li>
+			<li>在钩子函数里对当前用户要投票的对象作判断，是自己喜欢的才放过。</li>
+		</ol>
+		<p>问题的关键在第2步，我们通过代码来看，究竟是怎样装钩子的。</p>
+		<p class="title">IHTMLDocument2Example10/Unit.pas</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, OleCtrls, SHDocVw, MsHTML, HtmlEvent;
+
+type
+  TForm1 = class(TForm)
+    WebBrowser1: TWebBrowser;
+    Label1: TLabel;
+    ComboBox1: TComboBox;
+    procedure FormShow(Sender: TObject);
+    procedure WebBrowser1DocumentComplete(ASender: TObject;
+      const pDisp: IDispatch; var URL: OleVariant);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+  private
+    HTMLButtonClickHook: TDHtmlEvent;
+    procedure HTMLButtonClickHookEvt(Sender: TObject);
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  HTMLButtonClickHook := TDHtmlEvent.Create;
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  if HTMLButtonClickHook <> nil then HTMLButtonClickHook.Free;
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+var
+  URL, path: String;
+begin
+  path := application.Exename;
+  URL := Copy(path, 0, Pos('IHTMLDocument2Example10\', path) + 23) + 'testPage.html';
+  WebBrowser1.Navigate(URL);
+end;
+
+procedure TForm1.HTMLButtonClickHookEvt(Sender: TObject);
+var
+  vDoc: IHTMLDocument2;
+  vEle: IHTMLElement;
+  i: Integer;
+begin
+  vDoc := WebBrowser1.Document as IHTMLDocument2;
+  if ComBoBox1.itemIndex = 3 then
+  begin
+    vDoc.parentWindow.execscript('Sakuras();', 'javascript');
+    Exit;
+  end;
+  for i := 0 to 2 do
+  begin
+    vEle := vDoc.all.item('character', i) as IHTMLElement;
+    if pos('checked', LowerCase(vEle.outerHTML)) > 0 then
+    begin
+      if i = ComboBox1.itemIndex then
+      begin
+        vDoc.parentWindow.execscript('Sakuras();', 'javascript');
+        Exit;
+      end;
+      Break;
+    end;
+  end;
+  ShowMessage('不许你投她的票！');
+end;
+
+procedure TForm1.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+var
+  vDoc: IHTMLDocument2;
+  vEle: IHTMLElement;
+begin
+  vDoc := WebBrowser1.Document as IHTMLDocument2;
+  vEle := vDoc.all.item('Sakuras', 0) as IHTMLElement;
+  vEle.onclick := HTMLButtonClickHook.HookEventHandler(HTMLButtonClickHookEvt);
+end;
+
+end.
+			</textarea>
+		</div>
+		<p>第7行，uses里面添加单元HtmlEvent，这是用于hook的一个单元，不是delphi自带的，需要手动添加到项目里。<br/>
+		第20行，声明一个TDHtmlEvent类型的变量。<br/>
+		第21行，声明一个过程，该过程就是hook的函数。每次被hook的页面事件被触发的时候，都会进到这里来。<br/>
+		第36行，手动Create TDHtmlEvent变量，必须要手动生成一下哦。<br/>
+		第41行，在窗口销毁时手动释放TDHtmlEvent变量。自己手动生成的就要自己释放。<br/>
+		第88行，找到要hook的按钮元素。<br/>
+		第89行，调用HookEventHandler来hook住该元素的onclick事件。这句话宣告hook成功。<br/>
+		第60行，如果当前选项是「全員大好き」的话，直接调用js并退出。因为元素一旦被hook，原有的功能就失效了。所以需要手动调用onclick指向的js，来保证它原有功能的实现。<br/>
+		第68行，判断是否有checked的字样出现在outerHTML中，如果有的话，代表该项被选中了。<br/>
+		第70行，判断被选中项是否和主程序里ConboBox1的选项相符，如果是的话，调用js并退出。<br/>
+		第78行，告知用户，我就是不给你选！</p>
+		<p>不仅仅onclick可以hook，onchange，onmouseover之类的都可以。</p>
+		<p><span>一旦被hook，原有的功能就失效了。</span></p>
+		<p>要记得手动生成，手动释放。</p>
+
+		<p class="summary">好啦，这一节就到这里，我们来总结一下：</p>
+		<ul class="summary">
+			<li>Hook页面元素的js事件，需要引用一个叫htmlEvent的第三方的单元。</li>
+			<li>TDHtmlEvent需要手动生成，手动释放。</li>
+			<li>一旦hook成功，原有的功能会失效。</li>
+		</ul>
+		<p>hook的使用有点繁琐，建议童鞋们一定要自己写一下，下面留一个习题。</p>
+		<p class="exercise">练习2：在例10的基础上，hook住id为misakamikoto的input元素的onclick事件，当用户点击的时候show一个message「御坂美琴を応援してありがとう」。</p>
+		<div class="bpn">
+			<div class="pre" onclick="subFrameNav('IHTMLDocument2', 4)"></div>
+			<div class="next" style="display:none"></div>
+		</div>
+	</body>
+</html>

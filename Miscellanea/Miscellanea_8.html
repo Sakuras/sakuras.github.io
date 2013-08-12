@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Miscellanea_8</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>利用IHTMLDocument2获取IWebBrowser</h1>
+		<p>有时候，我们手头上有个IHTMLDocument2，还想要它对应的IWebBrowser，该怎么办呢？</p>
+		<p>只要利用QueryInterface和QueryService俩个方法就可以了。</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+var
+  vSer: IServiceprovider;
+  vWeb: IWebBrowser2;
+  vDoc: IHTMLDocument2;
+begin
+  vDoc := WebBrowser1.Document as IHTMLDocument2;
+  vDoc.QueryInterface(IServiceprovider, vSer);
+  vSer.QueryService(IID_IWebBrowserApp, IID_IWebBrowser2, vWeb);
+end;
+			</textarea>
+		</div>
+		<p>先用QueryInterface找到IServiceprovider接口，然后用QueryService找到vWeb。就这么简单。</p>
+		<p>话说并不是所有的IHTMLDocument2都有一个属于它的IWebBrowser的，这点需要注意哦。</p>
+	</body>
+</html>
