@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>IHTMLDocument2_4</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>Javascript相关操作</h1>
+		<p>通过之前的章节，相应大家即使面对复杂框架结构的页面，也能轻松找到任意一个元素了。
+		但有时候还是会出现问题，例如表单无法自动填写，例如对有些由js动态生成的元素仍然束手无策。
+		这时候，就需要用到本节讲的内容了。</p>
+		<p>继续「俺様の流儀」，直接上例题。</p>
+
+		<p class="example">例7：有如下页面，请在页面载入完成后把kisaragi Sakuras的余额改成255。</p>
+		<p>
+			<img src="../Images/IHTMLDocument2Example7Image1.png" />
+		</p>
+		<p class="title">IHTMLDocument2Example7/testPage.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>testPage</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript">
+      function Sakuras()
+      {
+        document.getElementsByTagName('td')[19].innerText = "127";
+      }
+    </script>
+  </head>
+  <body onload="Sakuras();">
+    <table>
+      <tr>
+        <td>账号</td>
+        <td>昵称</td>
+        <td>最喜欢的人</td>
+        <td>余额</td>
+      </tr>
+      <tr>
+        <td>001</td>
+        <td>kashiwazaki sena</td>
+        <td>Sakuras</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td>002</td>
+        <td>mikatsuki yozora</td>
+        <td>Sakuras</td>
+        <td>200</td>
+      </tr>
+      <tr>
+        <td>003</td>
+        <td>hasegawa kobato</td>
+        <td>Sakuras</td>
+        <td>50</td>
+      </tr>
+      <tr>
+        <td>004</td>
+        <td>kisaragi Sakuras</td>
+        <td>yozora</td>
+        <td>80</td>
+      </tr>
+    </table>
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p>建议初学的童鞋先别看解答，自己根据之前的知识来做一下，亲身体会一下记得更牢（当年这东西导致的bug花了我3天！）。</p>
+		<p class="explain">解释：对于这题，之前的方法是不管用的。因为即使我们在DocumentComplete里找到td，修改了属性。由于body的onload里js执行在这之后，立马会把余额再改回去。所以我们需要后下手为强。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>当DocumentComplete被触发时，我们激活一个定时器（TTimer）。</li>
+			<li>稍等一段时间（onload的js在本地浏览器执行的时间），大约100毫秒。</li>
+		</ol>
+		<p class="title">IHTMLDocument2Example7/Unit1.pas</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+procedure TForm1.Timer1Timer(Sender: TObject);
+var
+  vDoc: IHTMLDocument2;
+  vCol: IHTMLElementCollection;
+  vEle: IHTMLElement;
+begin
+  Timer1.Enabled := False;
+  vDoc := WebBrowser1.Document as IHTMLDocument2;
+  vCol := vDoc.all.tags('td') as IHTMLElementCollection;
+  vEle := vCol.item(19, 0) as IHTMLElement;
+  vEle.setAttribute('innerText', '225', 0);
+end;
+
+procedure TForm1.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+begin
+  Timer1.Enabled := True;
+end;
+			</textarea>
+		</div>
+		<p>第17行，检测到事件被抛出，立刻激活Timer。<br/>
+		第7行，进入Timer事件的第一件事情，就是把Timer关了~免得一直运行。</p>
+		<p>此外，还可以自己创建线程来等待，这个属于delphi的技术，不予详细讨论。</p>
+		<p>同时可能有一些较真的童鞋就要问“Sakuras酱，万一客户端cpu很慢，100ms后还没有吧js执行好，怎咩办啊？”之类的问题。Sakuras就在这里给出解答。</p>
+		<p>本例中万一真的出现100ms后js还没有执行完毕的情况的话，最后的余额更改将失败。</p>
+		<p>但是这实在是小概率事件~大不了你改成200ms或者300ms么。</p>
+		<p>如果非要精确的知道js执行完毕的时间的话，还是有办法滴！就是有点麻烦，不追求上进的童鞋可以跳过了。</p>
+
+		<p class="example">例8：在例7的情况下，要求精确的知到js执行完毕的时间点，然后从那时开始进行余额的更改。</p>
+		<p class="explain">解释：为了精确知道js执行完毕的时间，我们需要给页面安装一个监听器，毕竟页面是不会主动告诉程序“我的js执行完了”的。监听器的话，可以考虑利用js事件。这里给出一个较简单的方案。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>修改body的onload事件，在最后插入自己的js代码（一个悄悄修改title的js）。</li>
+			<li>等待自己的js代码执行，这意味着之前原先的js已经执行完毕了。</li>
+			<li>自己的js代码通过某种方式触发到主程序的事件（onTitleChange事件）。</li>
+			<li>在相应事件里处理。</li>
+		</ol>
+		<p class="title">IHTMLDocument2Example8/Unit1.pas</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+procedure TForm1.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+var
+  vDoc: IHTMLDocument2;
+  //vEle: IHTMLElement;
+  sJs: String;
+begin
+  vDoc := WebBrowser1.Document as IHTMLDocument2;
+  //vEle := vDoc.body;
+  //setAttribute的方法对于事件是无效的。
+  //vEle.setAttribute('onload','Sakuras();alert("Sakuras")', 0);
+  //但是getAttribute方法仍然可以把这个值取出来。
+  //ShowMessage(vEle.getAttribute('onload', 0));
+  sJs := 'document.body.onload = function(){Sakuras();document.title="Sakuras";};';
+  //此外，下面这种方法也OK。
+  //sJs := 'document.body.onload = new Function("Sakuras();document.title=\"Sakuras\";");';
+  vDoc.parentWindow.execscript(sJs, 'javascript');
+end;
+
+procedure TForm1.WebBrowser1TitleChange(ASender: TObject;
+  const Text: WideString);
+var
+  vDoc: IHTMLDocument2;
+  vCol: IHTMLElementCollection;
+  vEle: IHTMLElement;
+begin
+  if Text = 'Sakuras' then
+  begin
+    vDoc := WebBrowser1.Document as IHTMLDocument2;
+    vCol := vDoc.all.tags('td') as IHTMLElementCollection;
+    vEle := vCol.item(19, 0) as IHTMLElement;
+    vEle.setAttribute('innerText', '225', 0);
+  end;
+end;
+			</textarea>
+		</div>
+		<p>第6行，声明一个字符串用来保存要执行的js代码。<br/>
+		第11行，该行已被注释，它试图用setAttribute来给代表js事件的属性赋值，但是是行不通的。<br/>
+		第13行，该行已被注释，它试图用getAttribute来获取代表js事件的属性的值，这样是OK的。<br/>
+		第14行，这段js代码给onload事件赋了新值，原来的值将会消去（这里只是赋值了字符串，该js脚本并未得到执行）。</br/>
+		第16行，改行已被注释，另一种给js事件赋值的方法，这个更加正规，且注意Function的F一定要大写。<br/>
+		第17行，调用execscript方法来执行脚本。第一个参数是脚本代码，第二个参数是脚本类型（javascript）。<br/>
+		第27行，判断该次事件是否是之前放下的监听器所触发的。</p>
+		<p>我们看到，在14行处给onload赋值的时候，不但保留了原来的js代码，还在其后面新加入了document.title="Sakuras"。这就可以看做一个监听器。
+		当它被执行的时候，title被改动，从而触发了onTitleChange事件，被主程序获知。主程序在判断到title为“Sakuras”，即确保该次触发是由监听器带来的时候，执行相应代码。</p>
+		<p>但是该方法有个后遗症，会导致title的变更。严谨的话，最好在事后变回去，该例就不予实现了。</p>
+
+		<p class="example">例9：有如下页面，页面中的按钮每点击一下，就会给Sakuras的余额加1。现在要求通过程序对页面的控制，使得每点击一下余额加10。</p>
+		<p>
+			<img src="../Images/IHTMLDocument2Example9Image1.png" />
+		</p>
+		<p class="title">IHTMLDocument2Example9/testPage.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>testPage</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+    <script type="text/javascript">
+      var iIncrement = 1;
+      function Sakuras()
+      {
+        var oSpan = document.getElementsByTagName("span")[0];
+        var iCount = parseInt(oSpan.innerText) + iIncrement;
+        oSpan.innerText = iCount;
+      }
+    </script>
+    <p>Sakuras现有かのじょ <span>0</span> 个</p>
+    <input value="点我点我" type="button" onclick="Sakuras();" />
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p>有人可能看不懂代码中的日文「かのじょ」的意思，这个翻译过来呢就是“余额”的意思。对，正如例题里说的，就是我们要修改的余额。</p>
+		<p class="explain">解释：我们通过分析页面源代码知道，递增量是由一个iIncrement的js全局变量所控制的。因此只要修改这个变量，就能实现需求。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>找到iIncrement全局变量。</li>
+			<li>把它赋值为10。</li>
+		</ol>
+		<p class="title">IHTMLDocument2Example9/Unit1.pas</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+procedure TForm1.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+var
+  vDoc: IHTMLDocument2;
+begin
+  WebBrowser1.OleObject.document.Script.iIncrement := 10;
+  //当然，直接用js修改全局变量也是ok的。
+  //vDoc := WebBrowser1.Document as IHTMLDocument2;
+  //vDoc.parentWindow.execscript('document.Script.iIncrement = 10;', 'javascript');
+end;
+			</textarea>
+		</div>
+		<p>第7行，直接找到该全局变量，赋值。<br/>
+		第9行，该行已被注释，通过js找到该全局变量，赋值。</p>
+		<p>这个例题的目的，主要是介绍OleObject。它会把浏览器控件当成一个自动化对象，从而可以使用document，Script等IDE不认识的属性，这些属性会在运行时寻找，编译时不会报错。</p>
+		<p>相比之下，这样的优点在于可以轻松获取js变量的值。如果使用注释掉的方法的话，无法把js变量的值通知到主程序。</p>
+		<p>另外，如果不是js全局变量，而是函数内的局部变量的话，此法将无能为力。</p>
+
+		<p class="summary">好啦，这一节就到这里，我们来总结一下：</p>
+		<ul class="summary">
+			<li>onload函输执行在documentComplete之后。</li>
+			<li>如何让主程序的代码在onload函数之后执行（TTimer或者监听器）。</li>
+			<li>用execscript方法调用js，自己写的js或者页面中本身有的js都没问题。</li>
+			<li>OleObject的使用（修改或者获取js全局变量的值）。</li>
+		</ul>
+		<div class="bpn">
+			<div class="pre" onclick="subFrameNav('IHTMLDocument2', 3)"></div>
+			<div class="next" onclick="subFrameNav('IHTMLDocument2', 5)"></div>
+		</div>
+	</body>
+</html>

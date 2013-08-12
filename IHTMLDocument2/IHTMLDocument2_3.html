@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>IHTMLDocument2_3</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>框架结构中元素的寻找</h1>
+		<p>目前frame，iframe结构（以下称框架）被广泛应用于互联网网站。他们本身就相当于一个页面，有自己的<span>文档树</span>，因此，框架内的内容无法由外层的文档树获取。我们要寻找框架内的元素，必须先取到该框架的文档树，然后再利用上一节介绍的方法才行。</p>
+
+		<p class="example">例6：有如下页面，里面的iframe嵌套了例4的页面，请在页面载入完成后自动修改kisaragi Sakuras最喜欢的人为Railgun。</p>
+		<p>
+			<img src="../Images/IHTMLDocument2Example6Image1.png" />
+		</p>
+		<p class="title">IHTMLDocument2Example6/testPage.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>testPage</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+    <iframe id="testFrame" name="testFrame" height="200px" width="400px" src="./iframe.html"></iframe>
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p class="explain">解释：iframe的src属性，指向的页面即为例4中的页面。由于这层框架的阻挡，我们已经无法直接从最外层的文档树开始寻找。需要想办法获取该框架里面的文档树。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>找到iframe元素。</li>
+			<li>根据该元素获取它内部的文档树。</li>
+			<li>根据获得的文档树，找到框架内部的元素进行修改。</li>
+		</ol>
+		<p class="title">IHTMLDocument2Example6/Unit1.pas</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+procedure TForm1.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+var
+  vWeb: IWebBrowser;
+  vDoc: IHTMLDocument2;
+  vCol: IHTMLElementCollection;
+  vEle: IHTMLElement;
+  i: integer;
+begin
+  vDoc := WebBrowser1.Document as IHTMLDocument2;
+  vWeb := vDoc.all.item('testFrame', 0) as IWebBrowser;  //iframe
+  vDoc := vWeb.Document as IHTMLDocument2;
+  vCol := vDoc.all.tags('tr') as IHTMLElementCollection;
+  for i := 0 to vCol.length - 1 do
+  begin
+    vEle := vCol.item(i, 0) as IHTMLElement;
+    if pos('kisaragi Sakuras', vEle.getAttribute('innerText', 0)) > 0 then
+    begin
+      Break;
+    end;
+  end;
+  vCol := vEle.children as IHTMLElementCollection;
+  vEle := vCol.item(2, 0) as IHTMLElement;  //最喜欢的人td
+  vEle.setAttribute('innerText', 'Railgun', 0);
+end;
+			</textarea>
+		</div>
+		<p>第4行，声明了一个IWebBrowser接口，该接口用于指向一个浏览器对象。<br/>
+		第11行，我们把找到的iframe的IDispatch接口as为IWebBrowser接口（以前是IHTMLElement）。<br/>
+		第12行，从这个IWebBrowser中找出相应的IHTMLDocument接口。</p>
+		<p>值得注意的是，不是所有的元素的IDispatch都可以as为IWebBrowser的，<span>有且只有</span>标签为frame或者iframe的元素才行。</p>
+		<p>这回用了例5中谈到的直接遍历tr的方法。仅供参考。</p>
+		<p>由于框架会阻断由顶层文档发起的查找，所以大家分析页面结构的时候，要特别注意有没有框架结构。</p>
+		<p>框架内嵌套框架的话，只好一步步顺着框架来找下去了。</p>
+
+		<p class="summary">好啦，这一节就到这里，我们来总结一下：</p>
+		<ul class="summary">
+			<li>遇到frame或者iframe等框架结构，框架内的元素无法由顶层的文档树直接获取到。</li>
+			<li>可以把框架元素as为IWebBrowser接口来获取它的IHTMLDocument2接口。</li>
+		</ul>
+		<div class="bpn">
+			<div class="pre" onclick="subFrameNav('IHTMLDocument2', 2)"></div>
+			<div class="next" onclick="subFrameNav('IHTMLDocument2', 4)"></div>
+		</div>
+	</body>
+</html>

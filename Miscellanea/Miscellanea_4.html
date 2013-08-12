@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Miscellanea_4</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>利用原生TImage控件显示Gif动画</h1>
+		<p>我们知道，普通的把Gif放到TImage里，是一个静止的图像，有时候我们需要让Gif动起来。这时候就有俩种选择。<br/>
+		1.采用Jv的TJvGifAnimator第三方组件，轻松的实现您要的功能！<br/>
+		2.仔细阅读本文，利用原生的TImage控件来显示Gif动画。</p>
+		<p>选1的童鞋请点击右上角X按钮。选2的童鞋欢迎往下看。</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+use
+  ..., GIFImg;
+
+...
+begin
+  TGIFImage(Image1.Picture.Graphic).AnimationSpeed := 100;
+  TGIFImage(Image1.Picture.Graphic).Animate := True;
+end;
+			</textarea>
+		</div>
+		<p>老样子，别忘了添加GIFImg单元。俩句话搞定，爽吧。TJvAnimator去死吧！</p>
+	</body>
+</html>

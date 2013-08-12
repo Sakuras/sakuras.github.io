@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Miscellanea_7</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>通过浏览器句柄获取到内部DOM</h1>
+		<p>随着时间的推移，我们终于不再满足于只控制自己浏览器控件内部的DOM了，我们希望能够找到用户界面上的任意一个存在的DOM并且控制之。</p>
+		<p>OK，下面就介绍一下具体的方法，无图无真相，我们上一枚效果图。</p>
+		<p>
+			<img src="../images/MiscellaneaSourceCode3Image1.png" />
+		</p>
+		<p>首先点击页面上的按钮“showModelessDialog”弹出rika的网页对话框。<br/>
+		然后点击程序里的按钮“点我获取rika的body”。<br/>
+		程序执行后自动寻找到弹出的网页对话框，然后获取DOM，并且吧body.outerHTML show出来。</p>
+		<p>啦啦啦，下面是源码，我们一边看源码一边说：</p>
+		<p class="title">MiscellaneaSourceCode3/Unit1.pas</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, OleCtrls, SHDocVw, MsHTML, ActiveX;
+
+type
+  TObjectFromLResult = function(LRESULT: lResult; const IID: TIID;
+    WPARAM: wParam; out pObject): HRESULT; stdcall;
+
+  TForm1 = class(TForm)
+    WebBrowser1: TWebBrowser;
+    Button1: TButton;
+    procedure FormShow(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+function GetDocInterface(hwnd: THandle): IHtmlDocument2;
+var
+  hInst: THandle;
+  hr: HResult;
+  lRes: Cardinal;
+  MSG: Integer;
+  vDoc: IHtmlDocument2;
+  ObjectFromLresult: TObjectFromLresult;
+begin
+  hInst := LoadLibrary('Oleacc.dll');
+  if hInst = 0 then Exit;
+  @ObjectFromLresult := GetProcAddress(hInst, 'ObjectFromLresult');
+  if @ObjectFromLresult <> nil then
+  begin
+    try
+      MSG := RegisterWindowMessage('WM_HTML_GETOBJECT');
+      SendMessageTimeOut(Hwnd, MSG, 0, 0, SMTO_ABORTIFHUNG, 10000, lRes);
+      hr := ObjectFromLresult(lRes, IID_IHTMLDocument2, 0, vDoc);
+      if SUCCEEDED(hr) then
+      begin
+        Result := vDoc;
+      end;
+    finally
+      FreeLibrary(hInst);
+    end;
+  end;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  h: HWND;
+  vDoc: IHTMLDocument2;
+begin
+  //一般IE的showModalDialog会带上“网页对话框”这样的标识
+  h := FindWindow(nil, 'rika -- 网页对话框');
+  if h = 0 then
+  begin
+    ShowMessage('未检测到弹窗，请点击页面上的按钮打开新窗口后再试。');
+    Exit;
+  end;
+  //获取他的子窗口，这个句柄才是能找出DOM的句柄
+  h := GetWindow(h, GW_CHILD);
+  vDoc := GetDocInterface(h);
+  ShowMessage(vDoc.body.outerHTML);
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+var
+  URL: String;
+begin
+  URL := Copy(application.Exename, 0, Pos('MiscellaneaSourceCode3\', application.Exename) + 22) + 'testPage.html';
+  WebBrowser1.Navigate(URL);
+end;
+
+end.
+			</textarea>
+		</div>
+		<p>第7行，记得加上MsHTML和ActiveX。<br/>
+		第10行，声明一个函数TObjectFromLResult。<br/>
+		第65行，FindWindow获取弹窗的句柄。<br/>
+		第72行，注意，我们需要用该句柄的子句柄，才能获取到DOM。<br/>
+		第73行，调用函数，传入句柄，返回IHTMLDocument2接口。</p>
+		<p>第40行，载入一个叫Oleacc的DLL。我们需要用到它提供的方法。<br/>
+		第42行，用GetProcAddress从DLL内找到我们要的方法，赋值给ObjectFromLResult。<br/>
+		第46行，注册一个消息，用于获取HTML对象。<br/>
+		第47行，向那个句柄所代表的窗口发送这条消息，这样它就把它的HTML对象返回给我们了。<br/>
+		第48行，利用之前的ObjectFromLresult从返回值中找到IHTMLDocument2接口。大功告成。</p>
+		<p>来解释一下为什么要找子句柄，其实他们在Spy++下看是这个样子的。</p>
+		<p>当我们点击标题栏时找到的窗口。注意类名是Internet Explorer TridentDlgFrame。</p>
+		<p>
+			<img src="../images/MiscellaneaSourceCode3Image2.png" />
+		</p>
+		<p>当我们点击内部找到的窗口。注意类名是Internet Explorer Server。</p>
+		<p>
+			<img src="../images/MiscellaneaSourceCode3Image3.png" />
+		</p>
+		<p>不错，下面这个才是我们需要的句柄，下面这个正好是上面那个的子窗口。</p>
+		<p>PS.其实整天用Spy++各种偷窥电脑上窗口的类名和关系也是很有乐趣的。</p>
+		<p>再PS.因为这是个showModelessDialog，所以找一下子窗口就可以了。万一是window.open打开的新窗口，结构可没这么简单哦。</p>
+	</body>
+</html>

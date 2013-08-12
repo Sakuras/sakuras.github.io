@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>IHTMLDocument2_2</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>页面中任意元素的寻找</h1>
+		<p>上一节介绍了如何寻找具有特定id或者name的元素，这一节我们介绍获取任意元素的方法。</p>
+
+		<p class="example">例4：有如下页面，页面载入完全后，自动找出kisaragi Sakuras那一栏，打印出该昵称。</p>
+		<p>
+			<img src="../Images/IHTMLDocument2Example4Image1.png" />
+		</p>
+		<p class="title">IHTMLDocument2Example4/testPage.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>testPage</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td>账号</td>
+        <td>昵称</td>
+        <td>最喜欢的人</td>
+        <td>余额</td>
+      </tr>
+      <tr>
+        <td>001</td>
+        <td>kashiwazaki sena</td>
+        <td>Sakuras</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td>002</td>
+        <td>mikatsuki yozora</td>
+        <td>Sakuras</td>
+        <td>200</td>
+      </tr>
+      <tr>
+        <td>003</td>
+        <td>hasegawa kobato</td>
+        <td>Sakuras</td>
+        <td>50</td>
+      </tr>
+      <tr>
+        <td>004</td>
+        <td>kisaragi Sakuras</td>
+        <td>yozora</td>
+        <td>80</td>
+      </tr>
+    </table>
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p class="explain">解释：本例中要寻找的元素（一个td标签的元素）没有id，没有name。但是我们知道它在文档中的上下文关系，它是唯一的一个table下的第5个tr的第2个td。因此我们可以利用这点来找到它。</p>
+		<p>从现在起，<span>步骤</span>这一栏不再重点讲各种操作，而是转到代码生成的思路上。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>获取到DOM。</li>
+			<li>获取到table。</li>
+			<li>获取到tbody。</li>
+			<li>获取到第5个tr。</li>
+			<li>获取到第2个td。</li>
+		</ol>
+		<p class="title">IHTMLDocument2Example4/Unit1.pas</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+procedure TForm1.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+var
+  vDoc: IHTMLDocument2;
+  vCol: IHTMLElementCollection;
+  vEle: IHTMLElement;
+begin
+  vDoc := WebBrowser1.Document as IHTMLDocument2;
+  vCol := vDoc.all.tags('table') as IHTMLElementCollection;
+  vEle := vCol.item(0, 0) as IHTMLElement;  //table
+  vCol := vEle.children as IHTMLElementCollection;
+  vEle := vCol.item(0, 0) as IHTMLElement;  //tbody
+  vCol := vEle.children as IHTMLElementCollection;
+  vEle := vCol.item(4, 0) as IHTMLElement;  //tr
+  vCol := vEle.children as IHTMLElementCollection;
+  vEle := vCol.item(1, 0) as IHTMLElement;  //td
+  ShowMessage(vEle.innerText);
+end;
+			</textarea>
+		</div>
+		<p>第5行，声明了一个IHTMLElementCollection的接口，该接口是用于指向一个元素集合的。<br/>
+		第9行，调用tags方法，获取特定标签的元素集合，这里取到的是所有table元素的集合（虽然只有一个）。<br/>
+		第10行，调用item方法，获取序号为0的元素。<br/>
+		第11行，调用children方法，获取该元素下的所有一级子元素的集合。</p>
+		<p>关于item方法，上一节也提到过，但是这里需要更详细的讲解一下。</p>
+		<p>上一节的调用方式（vDoc.all.item）其实和这里的（vCol.item）是一样的。
+		因为vDoc.all可以看做是一个DOM文档下元素的全集，也是一个元素的集合。
+		此外，上一节说过item的第一个参数表示id或者Name，第二个参数表示序号。
+		这一点其实有例外，我们来看一下微软对该方法的第一个参数的说明：</p>
+		<p>
+			<img src="../Images/IHTMLDocument2Example4Image2.jpg" />
+		</p>
+		<p>当第一个参数是整型的时候，此时第一个参数即代表序号，第二个参数失去意义。
+		完整的链接参见：<a target="_blank" href="http://msdn.microsoft.com/en-us/library/jj160789(v=vs.85).aspx">item方法微软官方说明</a>
+		<p>我们注意到，找到table后，下一步不是去找tr，而是找了tbody。这个tbody，虽然没有在HTML源码里面出现，但是用Chrome开发人员工具查看的话，它是确实存在的。因此我们要注意查找元素时，不要漏掉了这个tbody。</p>
+		<p>剩下的就是简单的顺藤摸瓜，最终找到我们要的td，把他的innerText属性show出来即可。</p>
+
+		<p class="example">例5：在例4的基础上，我们假设只知道用户的昵称，对于排列顺序，对应编号，余额等一概不知，要求在页面载入完成后自动把kisaragi Sakuras的余额改成255。</p>
+		<p class="explain">解释：本例中由于位置不固定，不能一上来开始就使用顺藤摸瓜法，我们需要先找到相应昵称的td（先找到根，再开始顺藤摸瓜），由此找到它的parent tr，再找到该tr对应的余额td即可。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>获取到DOM。</li>
+			<li>获取到所有td的集合。</li>
+			<li>遍历集合获取到kisaragi Sakuras的td。</li>
+			<li>获取到上述td的parent tr。</li>
+			<li>获取到余额的td。</li>
+		</ol>
+		<p class="title">IHTMLDocument2Example5/Unit1.pas</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+procedure TForm1.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+var
+  vDoc: IHTMLDocument2;
+  vCol: IHTMLElementCollection;
+  vEle: IHTMLElement;
+  i: integer;
+begin
+  vDoc := WebBrowser1.Document as IHTMLDocument2;
+  vCol := vDoc.all.tags('td') as IHTMLElementCollection;
+  for i := 0 to vCol.length - 1 do
+  begin
+    vEle := vCol.item(i, 0) as IHTMLElement;
+    if vEle.getAttribute('innerText', 0) = 'kisaragi Sakuras' then
+    begin
+      Break;
+    end;
+  end;
+  vEle := vEle.parentElement;  //tr
+  vCol := vEle.children as IHTMLElementCollection;
+  vEle := vCol.item(3, 0) as IHTMLElement;  //余额td
+  vEle.setAttribute('innerText', '255', 0);
+end;
+			</textarea>
+		</div>
+		<p>第11行，vCol.length返回该集合元素的个数。<br/>
+		第14行，调用getAttribute方法获取某个属性值，第一个参数是属性名，第二个是一个flag，指定为0即可。（是不是和setAttribute很像呢）<br/>
+		第19行，调用parentElement属性来获取父元素。</p>
+		<p>有些对HTML熟悉的朋友可能已经注意到了，对于这道题来说，我们可以直接去找innerText属性包含kisaragi Sakuras字符串的tr。这样的话就可以省去获取parentElement那一步了。但是这里为了介绍parentElement，特意绕了点远路。</p>
+
+		<p class="summary">好啦，这一节就到这里，我们来总结一下：</p>
+		<ul class="summary">
+			<li>有特殊属性的元素，可以依据特殊属性来遍历寻找。</li>
+			<li>没有特殊属性的元素，可以根据上下文关系来找。</li>
+			<li>俩种方法结合，先根据特殊属性找，再结合上下文效率更高（例5）。</li>
+		</ul>
+		<p>这一节留一个练习题，有兴趣的童鞋可以尝试。</p>
+		<p class="exercise">练习1：在例4的基础上，添加一个按钮（TButton），在页面载入完成之后，使得每点击一下按钮，都给所有喜欢Sakuras的用户余额加1。</p>
+		<div class="bpn">
+			<div class="pre" onclick="subFrameNav('IHTMLDocument2', 1)"></div>
+			<div class="next" onclick="subFrameNav('IHTMLDocument2', 3)"></div>
+		</div>
+	</body>
+</html>

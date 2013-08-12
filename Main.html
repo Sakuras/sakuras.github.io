@@ -1,1 +1,43 @@
-My GitHub Page
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>初心者ガイド</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="shortcut icon" href="favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="style/MainCss.css" />
+		<script src="Js/MainJs.js"></script>
+	</head>
+	<body onload="init();" onresize="setLeftFrameHeight();" onscroll="resetUpToTopPos();"> 
+		<div class="leftDiv">
+			<img id="logo" alt="Lです" title="单击我回到主页" src="images/L(200x200).jpg" onclick="backToIndexPage();" ondblclick="setLanguagePos(); showLanguage();" />
+			<p id="name">Sakurasで～す</p>
+			<iframe id="LeftFrame" name="LeftFrame" src="LeftFrame/IndexLeft_JP.html"></iframe>
+		</div>
+		<div class="topDiv">
+			<div class="preDiv" onmouseover="showNavliPre();" onmouseout="hideNavliPre();" onclick="navliPre();"></div>
+			<ul class="navul" id="0">
+				<li class="navli show" onclick="frameNav(0, 'HTML');">HTML</li>
+				<li class="navli show" onclick="frameNav(1, 'CSS');">CSS</li>
+				<li class="navli show" onclick="frameNav(2, 'Javascript');">Javascript</li>
+				<li class="navli show" onclick="frameNav(3, 'IHTMLDocument2');">IHTMLDocument2</li>
+				<li class="navli" onclick="frameNav(4, 'Miscellanea');">杂项</li>
+			</ul>
+			<div class="nextDiv" onmouseover="showNavliNext();" onmouseout="hideNavliNext();" onclick="navliNext();"></div>
+		</div>
+		<iframe id="MainFrame" name="MainFrame" src="index/index_1.html"></iframe>
+		<div class="bottomDiv">
+			<p class="about">Sakuras提供的内容仅用于培训。我不保证内容的正确性。通过使用本站内容随之而来的风险与本站无关。当使用本站时，代表您已接受了本站的
+			<a href="javascript:void(0);" onclick="alert('本站的使用条款就是：好きに使ってください。');">使用条款</a> 和
+			<a href="javascript:void(0);" onclick="alert('本站的隐私条款就是：プライベートはない！この世の全ては俺様のものだ。');">隐私条款</a>
+			。版权所有，保留一切权利。未经书面许可，可随意转载。Sakuras简体中文版的所有内容仅供测试，对任何法律问题及风险不承担任何责任。</p>
+			<p class="copyright">版权所有，翻版不纠，心情好就给个本站链接，心情不好就算了。<br/>Copyright @ Sakuras by 2012/12/19.</p>
+		</div>
+		<a class="upToTop" href="javascript:void(0);" onclick="scrollTo(0, 0)" title="返回顶部" style="display:none"></a>
+		<div class="lanArea" onmouseover="showLanguage();" onmouseout="hideLanguage();">
+			<div class="language"> 
+				<div class="Japnese selected" onclick="changeLanguage(0, 'JP');">日本語</div>
+				<div class="Chinese" onclick="changeLanguage(1, 'CH');">中文</div>
+			</div>
+		</div>
+	</body>
+</html>
