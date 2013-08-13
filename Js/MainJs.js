@@ -106,7 +106,7 @@ function changeLanguage(iIndex, lan)
 	oLanDivs[iLanguageDivIndex].className = sClassName.replace(" selected", "");
 	oLanDivs[iIndex].className += " selected";
 	iLanguageDivIndex = iIndex;
-	document.getElementById("LeftFrame").src = "LeftFrame/indexLeft_" + lan + '.html'; 
+	document.getElementById("LeftFrame").src = "LeftFrame/IndexLeft_" + lan + '.html'; 
 }
 
 function setLanguagePos()
