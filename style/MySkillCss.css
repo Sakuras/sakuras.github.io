@@ -60,3 +60,10 @@ body{
 .red{
 	color:red;
 }
+a{
+	text-decoration:none;
+}
+.foot{
+	margin-bottom:100px;
+}
+
