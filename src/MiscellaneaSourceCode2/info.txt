@@ -1,0 +1,2 @@
+自定义TMyPanel继承至TPanel
+处理TMyPanel的WM_NCHITTEST来拖动它

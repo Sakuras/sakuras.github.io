@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>获取元素位置与大小</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type="text/css">
+      .leftDiv{
+        table-layout:fixed;
+        background-color:#bbffbb;
+        display:table;
+        margin-left:5%;
+        width:20%;
+        height:1100px;
+        float:left;
+        overflow:hidden;
+      }
+      .leftDiv p{
+        display:table-cell;
+        vertical-align:middle;
+        -webkit-transform:rotate(-90deg);
+        white-space:nowrap;
+        text-align:center;
+        font-size:80px;
+      }
+      .leftDiv:hover{
+        background-color:#99ff99;
+        cursor:pointer;
+      }
+      .topDiv{
+        width:70%;
+        background-color:#ffbbbb;
+        height:100px;
+        float:left;
+      }
+      .bottomDiv{
+        background-color:#aaaaaa;
+        margin-left:5%;
+        width:90%;
+        float:left;
+        height:100px;
+      }
+      .mainDiv{
+        float:left;
+        height:1000px;
+        background-color:#bbbbff;
+        width:70%;
+      }
+    </style>
+    <script type="text/javascript">
+      function test()
+      {
+        //待补完（つづく）
+        var o = document.getElementById("Railgun");
+        alert("width = " + o.scrollWidth);
+        alert("height = " + o.scrollHeight);
+      }
+    </script>
+  </head>
+  <body>
+    <div class="leftDiv" onclick="test()">
+      <p>点我执行js</p>
+    </div>
+    <div class="topDiv">I'm top</div>
+    <div class="mainDiv">
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <input id="Sakuras" type="text" value="我是一只小小小小input" /><br/>
+      <textarea id="Railgun">
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+我是一只小小小小textarea
+      </textarea>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+      <p>我是一只小小小小P</p>
+    </div>
+    <div class="bottomDiv">I'm bottom</div>
+  </body>
+</html>
