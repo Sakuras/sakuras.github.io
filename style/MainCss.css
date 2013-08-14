@@ -4,6 +4,8 @@
 	width:20%;
 	float:left;
 	text-align:center;
+	/*由于该div里有LeftFrame，所以需要设置换行符的高度为0，否则将导致有2个像素的偏差*/
+	line-height:0px;
 }
 .topDiv{
 	width:70%;
@@ -109,6 +111,9 @@
 #name{
 	font-family:微软雅黑;
 	background-color:#55ff77;
+	margin-top:16px;
+	margin-bottom:16px;
+	line-height:21px;
 }
 .upToTop{
 	position:absolute;

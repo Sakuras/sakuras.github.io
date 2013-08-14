@@ -81,8 +81,9 @@ function backToIndexPage()
 function setLeftFrameHeight()	//保持左Frame的bottom齐平
 {
 	var iMainFrameHeight = document.getElementById("MainFrame").offsetHeight;
-	var iLogoHeight = document.getElementById("logo").offsetHeight;
-	var iLeftFrameHeight = iMainFrameHeight - iLogoHeight + 16;
+	var iLeftFrameOffsetTop = document.getElementById("LeftFrame").offsetTop;
+	var iMainFrameOffsetTop = document.getElementById("MainFrame").offsetTop;
+	var iLeftFrameHeight = iMainFrameHeight - iLeftFrameOffsetTop + iMainFrameOffsetTop;
 	document.getElementById("LeftFrame").setAttribute("style", "height:" + iLeftFrameHeight + "px");
 }
 
