@@ -7,6 +7,175 @@
 		<script src="../Js/MainFrameJs.js"></script>
 	</head>
 	<body onload="init();">
-		すみません，まだ完成していないので...
+		<h1>CSS定位方式Ⅰ</h1>
+		<p>CSS提供3种定位方式，分别为<span>普通流</span>，<span>浮动定位</span>和<span>绝对定位</span>。
+		<p>普通流就是根据源码里标签的顺序，自然形成的定位流，换句话说，在一个HTML文件里不写任何关于定位的CSS，那就默认是普通流定位。</p>
+		<p>浮动定位的元素就像飘在水上的木桶，给它指定一个方向，它就会顺着票，直到被其他元素的边框挡住，才会停下来。</p>
+		<p>绝对定位的元素会脱离出文档流，就像一个天外来客，给它指定一个坐标，它就会死死的呆在那里，同时由于它不属于文档流，所以很可能会和其他文档流内的元素重叠。</p>
+
+		<p class="example">例1：用div标签生成3个元素块，让它们按普通流定位方式排列（如图）。</p>
+		<p>
+			<img src="../images/CSSExample1Image1.png" />
+		</p>
+		<p class="explain">解释：为了方便观察，我们去掉了div的边框，设置了大小，并且涂上了背景颜色。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>在body里插入3个div标签。</li>
+			<li>在head里插入style标签作为文件内css。</li>
+			<li>给div设置一些非布局的CSS属性，仅仅为了方便观察。</li>
+		</ol>
+		<p class="title">CSSExample1.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<html>
+  <head>
+    <title>普通流定位</title>
+    <style type="text/css">
+      div{
+        width:150px;
+        height:100px;
+        border:none;
+      }
+      .a{
+        background-color:red;
+      }
+      .b{
+        background-color:yellow;
+      }
+      .c{
+        background-color:blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="a"></div>
+    <div class="b"></div>
+    <div class="c"></div>
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p>我们可以看到，只要在body里按顺序写下3个div标签，它们就会自动按顺序排列好，由于div的display属性默认是block，因此会自动换行。</p>
+		<p>如果你不希望div自动换行，你可以更改它的display属性为inline-block。这里就不写出例子了。</p>
+
+		<p class="example">例2：用div标签生成3个元素块，让它们按浮动定位方式排列（如图）。</p>
+		<p>
+			<img src="../images/CSSExample2Image1.png" />
+		</p>
+		<p class="explain">解释：用于控制浮动定位的属性float，它的默认值是none。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>给类名为a的红色div设置float属性的值为left。</li>
+			<li>给类名为b的黄色div设置float属性的值为left。</li>
+			<li>给类名为c的蓝色div设置float属性的值为right。</li>
+		</ol>
+		<p class="title">CSSExample2.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<html>
+  <head>
+    <title>浮动定位</title>
+    <style type="text/css">
+      div{
+        width:150px;
+        height:100px;
+        border:none;
+      }
+      .a{
+        background-color:red;
+        float:left;
+      }
+      .b{
+        background-color:yellow;
+        float:left;
+      }
+      .c{
+        background-color:blue;
+        float:right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="a"></div>
+    <div class="b"></div>
+    <div class="c"></div>
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p>红色div第一个开始浮动，它向左直到碰到了body的左边框，才停下来。</p>
+		<p>黄色div第二个开始浮动，它向左直到碰到了红色div的右边框，才停下来。</p>
+		<p>蓝色div第三个开始浮动，它向右直到碰到了body的右边框，才停下来。</p>
+		<p>即使它们的display属性是block，但是只要float属性不是none，display属性就会被浏览器忽略（除非你把display也设置成none）。因此不会自动换行。</p>
+
+		<p class="example">例3：用div标签生成3个元素块，让红色块按绝对定位方式排列（如图）。</p>
+		<p>
+			<img src="../images/CSSExample3Image1.png" />
+		</p>
+		<p class="explain">解释：用于控制浮动定位的属性position，它的默认值是static。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>给类名为a的红色div设置position属性的值为absolute。</li>
+			<li>设置它到上边框的距离为30px。</li>
+			<li>设置它到左边框的距离为30px。</li>
+		</ol>
+		<p class="title">CSSExample3.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<html>
+  <head>
+    <title>浮动定位</title>
+    <style type="text/css">
+      div{
+        width:150px;
+        height:100px;
+        border:none;
+      }
+      .a{
+        background-color:red;
+        position:absolute;
+        top:30px;
+        left:30px;
+      }
+      .b{
+        background-color:yellow;
+      }
+      .c{
+        background-color:blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="a"></div>
+    <div class="b"></div>
+    <div class="c"></div>
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p>如果position的值为static，那么top和left属性将被忽略。</p>
+		<p>可以看到红色框覆盖到了普通流定位的另外俩个框上面，它们重叠了。</p>
+		<p>如果你希望红色框被覆盖，你可以调整它的z-index属性为-1。</p>
+
+		<p class="summary">好啦，这一节就到这里，我们来总结一下：</p>
+		<ul class="summary">
+			<li>普通流定位，浮动定位，绝对定位，我们应该根据需求选择不同的组合方式，来对页面进行排版。</li>
+			<li>例1里学习了如何使用普通流定位，事实上，在body里按顺序写好标签就可以了。</li>
+			<li>例2里学习了如何使用浮动定位，主要掌握float属性。</li>
+			<li>例3里学习了如何使用绝对定位，主要掌握position属性。</li>
+		</ul>
+		<div class="bpn">
+			<div class="pre" style="display:none"></div>
+			<div class="next" onclick="subFrameNav('CSS', 2)"></div>
+		</div>
 	</body>
 </html>
