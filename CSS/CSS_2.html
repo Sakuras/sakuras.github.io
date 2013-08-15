@@ -1,12 +1,204 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>CSS_1</title>
+		<title>CSS_2</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
 		<script src="../Js/MainFrameJs.js"></script>
 	</head>
 	<body onload="init();">
-		すみません、まだ完成していないので。。。
+		<h1>CSS定位方式Ⅱ</h1>
+		<p>上一节讲了普通流定位，浮动定位和绝对定位。并且举了最基本的例子。</p>
+		<p>这一节将作为上一节补充，把我觉得使用中需要注意的点用例子的形式表达给大家。</p>
+
+		<p class="example">例4：用div标签生成3个元素块，让黄色块在普通流定位的地方往右上角偏移30个像素（如图）。</p>
+		<p>
+			<img src="../images/CSSExample4Image1.png" />
+		</p>
+		<p class="explain">解释：我们设置position属性为relative，来进行在普通流定位基础上的<span>相对定位</span>。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>给类名为b的黄色div设置position属性的值为relative。</li>
+			<li>设置top属性的值为-30px。</li>
+			<li>设置left属性的值为30px。</li>
+		</ol>
+		<p class="title">CSSExample4.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<html>
+  <head>
+    <title>相对定位</title>
+    <style type="text/css">
+      div{
+        width:150px;
+        height:100px;
+        border:none;
+      }
+      .a{
+        background-color:red;
+      }
+      .b{
+        background-color:yellow;
+        position:relative;
+        top:-30px;
+        left:30px;
+      }
+      .c{
+        background-color:blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="a"></div>
+    <div class="b"></div>
+    <div class="c"></div>
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p>当position的值为absolute的时候，top和left用来指示距离<span>元素左上角</span>距离<span>整个页面左上角</span>的偏移量。</p>
+		<p>当position的值为relative的时候，top和left则用来指示相对偏移量。</p>
+		<p>黄色div偏移后，蓝色div并没有抢占它的位置，这是和绝对定位的根本性的不同，相对定位的元素仍然在文档流中。</p>
+		<p>事实上，只是我们看起来它偏移了，在浏览器的心目中，它的位置仍然在原来的地方。</p>
+
+		<p class="example">例5：用div标签生成一个大元素块，然后在其内部用div标签生成3个小元素块，让3个小元素块按浮动定位排列（如图）。</p>
+		<p>
+			<img src="../images/CSSExample5Image1.png" />
+		</p>
+		<p class="explain">解释：我们在外面套了一层大的div，是为了迫使小div换行，从而观察换行时的效果。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>按结构在body里写好4个div标签。</li>
+			<li>分别设置好各自的CSS属性。</li>
+			<li>仰天长啸一声，Sakuras大好き。</li>
+		</ol>
+		<p class="title">CSSExample4.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<html>
+  <head>
+    <title>浮动定位的卡位</title>
+    <style type="text/css">
+      div{
+        border:none;
+      }
+      .big{
+        width:300px;
+        height:270px;
+        border:5px solid black;
+      }
+      .a{
+        width:100px;
+        height:150px;
+        background-color:red;
+        float:left;
+      }
+      .b{
+        width:150px;
+        height:100px;
+        background-color:yellow;
+        float:left;
+      }
+      .c{
+        width:150px;
+        height:100px;
+        background-color:blue;
+        float:left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="big">
+      <div class="a"></div>
+      <div class="b"></div>
+      <div class="c"></div>
+    </div>
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p>由于大div的宽度是定死的，提供的横向空间不足，所以蓝色的div被迫换行了。</p>
+		<p>尽管大div提供了足够的高度，来让蓝色div排到红色div的正下方，但是蓝色div选择排到黄色div的下方，虽然这样的话就无法向左边float到底了。</p>
+		<p>这说明，所有的元素块都愿意呆在更高的地方，他们会优先选择高的地方，然后再朝着一个方向float。</p>
+		<p>如果大div既没有提供足够的宽度，又没有提供足够的高度，就会造成溢出，关于溢出时对页面的控制，可以狠狠的点击<a target="_blank" href="http://www.w3school.com.cn/css/pr_pos_overflow.asp">这里</a>。</p>
+		<p>如果我们没有显式的给大div指定尺寸，它就会很“聪明”的根据自己子元素的情况来调整自己的大小。我是指，某些情况下很聪明，我们来看下面这个例子。</p>
+
+		<p class="example">例6：用div标签生成一个不指定大小的大元素块，然后在其内部用div标签生成3个小元素块，其中红色的用普通定位，其他用浮动定位（如图）。</p>
+		<p>
+			<img src="../images/CSSExample6Image1.png" />
+		</p>
+		<p class="explain">解释：我们重点观察大div是怎样聪明的决定自己的尺寸的。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>新建一个文本文档。</li>
+			<li>把后缀名改成.html。</li>
+			<li>在里面写上代码并保存。</li>
+			<li>用Chrome浏览器打开.html文件</li>
+		</ol>
+		<p class="title">CSSExample6.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<html>
+  <head>
+    <title>浮动定位的弊端</title>
+    <style type="text/css">
+      div{
+        border:none;
+      }
+      .big{
+        border:5px solid black;
+      }
+      .a{
+        width:150px;
+        height:100px;
+        background-color:red;
+        float:left;
+      }
+      .b{
+        background-color:yellow;
+        float:left;
+      }
+      .c{
+        background-color:blue;
+        float:left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="big">
+      <div class="a"></div>
+      <div class="b"></div>
+      <div class="c"></div>
+    </div>
+  </body>
+</html>
+		</textarea>
+		</div>
+		<p>我们可以看到，大div是根据红色div的高度来决定自己的高度的。</p>
+		<p>大div之所以向右延伸占满了一行，是因为div的display属性默认是block，就是块元素。</p>
+		<p>事实上，父元素在没有显式指定尺寸的情况下，都会为了使自己能够包含所有的子元素，来动态的调整自己的尺寸。</p>
+		<p>但是，<span>浮动定位的元素将不被考虑在内</span>。浮动定位的元素就像坏孩子一样，虽然仍然是子元素集合中不可分割的一部分，但是父元素将不会为了他们而调整自己的尺寸。</p>
+		<p>除非，父元素自己就是float的，这样的话它就会好好考虑到坏孩子们的立场，从而愿意为了他们调节自己的尺寸了。</p>
+
+		<p class="summary">好啦，这一节就到这里，我们来总结一下：</p>
+		<ul class="summary">
+			<li>普通流定位的基础上，我们还可以使用相对定位来微调位置。</li>
+			<li>浮动定位的元素都喜欢呆在更靠上的位置。</li>
+			<li>浮动定位的元素将无法影响父元素的尺寸，除非父元素本身也是浮动定位的。</li>
+		</ul>
+		<p class="exercise">练习1：在例6的页面中，试着把大div的float属性也设置成left，观察排版效果。</p>
+		<div class="bpn">
+			<div class="pre" onclick="subFrameNav('CSS', 1)"></div>
+			<div class="next" onclick="subFrameNav('CSS', 3)"></div>
+		</div>
 	</body>
 </html>
