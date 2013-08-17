@@ -7,6 +7,144 @@
 		<script src="../Js/MainFrameJs.js"></script>
 	</head>
 	<body onload="init();">
-		すみません、まだ完成していないので。。。
+		<h1>浮动定位排版</h1>
+		<p>让我们来活用一下前两节学到的知识，写一个更复杂的排版。</p>
+		<p>这一节先用浮动定位来作为主要的排版方式，下一节将会用普通流定位来达到一模一样的排版效果，方便大家比较。</p>
+
+		<p class="example">例5：用浮动定位方式排版，完成如下效果图。</p>
+		<p>
+			<img src="../images/CSSExample7Image1.png" />
+		</p>
+		<p class="explain">解释：我们给各大块div都设置了相应的背景颜色，方便观察。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>在body里插入4个div，分别设置类名为left，top，main，bottom。</li>
+			<li>在left div里按照顺序插入div，把妖々夢的类名设置为selected。</li>
+			<li>在top div里按照顺序插入div，把博麗霊夢的类名设置为selected。</li>
+			<li>给各个元素添加CSS用以控制它们的显示和排布方式（详细内容会在代码后有分析）。</li>
+		</ol>
+		<p class="title">CSSExample7.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<html>
+  <head>
+    <title>浮动定位排版实例</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type="text/css">
+      .top{
+        width:75%;
+        float:left;
+        background-color:#ffdddd;
+      }
+      .left{
+        margin-left:5%;
+        width:15%;
+        float:left;
+        background-color:#ddffdd;
+      }
+      .main{
+        float:left;
+        width:75%;
+        background-color:#ddddff;
+      }
+      .bottom{
+        margin-left:5%;
+        width:90%;
+        float:left;
+        background-color:#bbdddd;
+      }
+      .left>.selected{
+        background-color:#88ff88;
+      }
+      .top>.selected{
+        background-color:#ffaaaa;
+      }
+      .top>div{
+        width:25%;
+        height:64px;
+        float:left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="left">
+      <div>靈異伝</div>
+      <div>封魔録</div>
+      <div>夢時空</div>
+      <div>幻想郷</div>
+      <div>怪綺談</div>
+      <div>紅魔郷</div>
+      <div class="selected">妖々夢</div>
+      <div>永夜抄</div>
+      <div>萃夢想</div>
+      <div>花映塚</div>
+      <div>文花帖</div>
+      <div>風神録</div>
+      <div>緋想天</div>
+      <div>地霊殿</div>
+      <div>星蓮船</div>
+      <div>非想天則</div>
+      <div>神霊廟</div>
+      <div>心綺楼</div>
+      <div>輝針城</div>
+    </div>
+    <div class="top">
+      <div class="selected">博麗霊夢</div>
+      <div>霧雨魔理沙</div>
+      <div>魂魄妖夢</div>
+      <div>西行寺幽々子</div>
+    </div>
+    <div class="main">
+      楽園の巫女<br/>
+      魔理沙の嫁三号<br/>
+      無節操<br/>
+      十万円<br/>
+      腋巫女<br/>
+      紅白<br/>
+      貧乏巫女<br/>
+      空を飛べる程度の能力<br/>
+      霊気を操る程度の能力<br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+    </div>
+    <div class="bottom">
+      コピーライトとかの情報はこちらに入力してください。<br/>
+      <br/>
+      <br/>
+    </div>
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p>第4行：为了在中文操作系统下正常显示日文，加上meta标签，注明编码为UTF-8。<br/>
+		第7行：设置top div的宽度为75%。之所以用百分比，是为了适应不同分辨率的桌面，同时在用户调整浏览器窗口大小的时候，也能够自动适应。<br/>
+		第11行：设置left div的左外边距为5%。这一块就是左边的留白。<br/>
+		第12行：设置left div的宽度为15%。左边留白5%，加上left宽度15%，加上top宽度75%。留下来的5%正好就是右边的留白。<br/>
+		第28行：left div下的selected类名的div被单独设置背景颜色，这样有一个“被选中”的效果。<br/>
+		第34行：单独对top div下的div进行CSS控制，为了展现出不同的效果。<br/>
+		第35行：设置每个div的宽度为25%，这样4个div正好瓜分了top div的所有宽度。<br/>
+		第37行：设置每个div都为浮动向左。这样div在宽度足够的情况下就不会自动换行，可以表现出图中那样的排列方式。</p>
+		<p>为了让main和left低端对齐，我在mian里面加了很多br元素。其实正确的做法是写js让它们自动对齐，这里为了例子简单化就没写。</p>
+		<p>只要调整好每个div块的大小，出现顺序，剩下的就是通通让他们向左浮动了。</p>
+		<p>如果你看不懂上面截图的内容并且想要了解的话，可以狠狠的点击<a target="_blank" href="http://ja.wikipedia.org/wiki/%E6%9D%B1%E6%96%B9Project">这里</a>。</p>
+
+		<p class="summary">好啦，这一节就到这里，我们来总结一下：</p>
+		<ul class="summary">
+			<li>这个例子中，整体采用浮动定位排版。</li>
+			<li>left div中，采用普通流定位排版，利用div是block元素会自动占满一行的特性，实现自动换行。</li>
+			<li>top div中，采用浮动定位排版，让div不再会自动占满一行，而是乖巧的按顺序贴到左边去。</li>
+		</ul>
+		<p class="exercise">练习2：在例7的页面中，试着把所有的CSS代码删除掉，观察显示效果（用以了解CSS究竟在控制页面显示中有多么重要的地位）。</p>
+		<div class="bpn">
+			<div class="pre" onclick="subFrameNav('CSS', 2)"></div>
+			<div class="next" onclick="subFrameNav('CSS', 4)"></div>
+		</div>
 	</body>
 </html>

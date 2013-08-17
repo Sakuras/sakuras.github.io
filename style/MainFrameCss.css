@@ -1,3 +1,6 @@
+body{
+	overflow-x:hidden;
+}
 h1{
 	background-color:#bbbbff;
 	padding:15px;
