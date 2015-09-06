@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Miscellanea_1</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>通过内联CSS查找元素</h1>
+		<p>有些页面的元素有些特别的内联CSS属性，这样我们可以利用这个属性很快的找到它。</p>
+		<p>假如页面中有个table元素的代码如下：</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<table style="border-style:none">
+  ...
+</table>
+			</textarea>
+		</div>
+		<p>我们可以这样找到它。</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+var
+  vDoc: IHTMLDocument2;
+  vCol: IHTMLElementCollection;
+  vEle: IHTMLElement;
+  ...
+begin
+  ...
+  vCol := vDoc.all.tags('table') as IHTMLElementCollection;
+  for i := 0 to vCol.length - 1 do
+  begin
+    vEle := vCol.item(i, 0) as IHTMLElement;
+    if String(vEle.style.getAttribute('border-style', 0)) = 'none' then
+    begin
+      break;
+    end
+  end
+  //出了循环后，vEle就是我们要的元素了。
+  ...
+end
+			</textarea>
+		</div>
+		<p>主要就是用了IHTMLElement的style属性。</p>
+	</body>
+</html>

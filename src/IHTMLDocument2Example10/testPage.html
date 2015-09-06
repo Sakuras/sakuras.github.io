@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>testPage</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+    <script type="text/javascript">
+      function Sakuras()
+      {
+        var oRadios = document.getElementsByName("character");
+        var selectedRadio;
+        for (var i = 0; i <= oRadios.length - 1; i++)
+        {
+          selectedRadio = oRadios[i];
+          if (selectedRadio.checked)
+          {
+            break;
+          } 
+        }
+        var oSpan = document.getElementById(selectedRadio.value);
+        var iCount = parseInt(oSpan.innerText) + 1;
+        oSpan.innerText = iCount;
+      }
+    </script>
+    <input type="radio" name="character" value="misakamikoto" checked="checked" />
+    御坂美琴 <span id="misakamikoto">0</span> 票<br/>
+    <input type="radio" name="character" value="yuukiasuna" />
+    結城アスナ <span id="yuukiasuna">0</span> 票<br/>
+    <input type="radio" name="character" value="nakanoazusa" />
+    中野梓 <span id="nakanoazusa">0</span> 票<br/>
+    <input id="Sakuras" value="点我投票" type="button" onclick="Sakuras();" />
+  </body>
+</html>

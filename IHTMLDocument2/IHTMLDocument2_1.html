@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>IHTMLDocument2_1</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>IHTMLDocument2接口使用基础</h1>
+		<p>IHTMLDocument2是由微软提供的用于访问浏览器控件内页面DOM的接口。</p>
+		<p>利用这个接口，我们可以在程序内部访问到浏览器控件里的页面DOM，对其进行增，删，查，改等操作。</p>
+
+		<p class="example">例1：编写程序，界面上包含一个浏览器控件（TWebBrowser），程序启动后浏览器控件跳转到百度首页（www.baidu.com）。</p>
+		<p class="explain">解释：本例和IHTMLDocument2无关，只是先确保一下TWebBrowser的基本使用方法，便于以后学习。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>拖一个TWebBrowser到Design界面上，适当调整大小。</li>
+			<li>添加From的OnShow事件。</li>
+			<li>在FormShow事件里编写自动导航到百度首页的代码。</li>
+		</ol>
+		<p class="title">IHTMLDocument2Example1/Unit1.pas</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, OleCtrls, SHDocVw;
+
+type
+  TForm1 = class(TForm)
+    WebBrowser1: TWebBrowser;
+    procedure FormShow(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+  WebBrowser1.Navigate('www.baidu.com');
+end;
+
+end.
+			</textarea>
+		</div>
+		<p>第28行，调用TWebBrowser的Navigate方法进行导航。</p>
+		<p>顺便说一下，这里URL写成“www.baidu.com”，其实完整的写法应该是“http://www.baidu.com”。</p>
+
+		<p class="example">例2：在例1的基础上，添加一个按钮（TButtom），等待页面载入完成后，点击按钮把页面的title能够修改标题为“Sakuras一下，你就知道”，然后把新的title打印出来。</p>
+		<p class="explain">解释：本例涉及的技术点有2个。一个是如何获取IHTMLDocument2接口，另一个是利用IHTMLDocument2实现对文档树的title的修改。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>在例1的基础上，拖一个TButton控件到Design界面上，添加OnClick事件</li>
+			<li>在uses里添加单元MsHTML。</li>
+			<li>在Button1Click事件里编写代码实现功能</li>
+		</ol>
+		<p class="title">IHTMLDocument2Example2/Unit1.pas</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, OleCtrls, SHDocVw, MsHTML;
+
+type
+  TForm1 = class(TForm)
+    WebBrowser1: TWebBrowser;
+    Button1: TButton;
+    procedure FormShow(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  vDoc: IHTMLDocument2;
+begin
+  vDoc := WebBrowser1.Document as IHTMLDocument2;
+  vDoc.title := 'Sakuras一下，你就知道';
+  ShowMessage(vDoc.title);
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+  WebBrowser1.Navigate('www.baidu.com');
+end;
+
+end.
+			</textarea>
+		</div>
+		<p>第7行，在uses里添加了MsHTML单元，否则IHTMLDocument2将无法使用。<br/>
+		第30行，声明一个IHTMLDocument2接口，该接口是用于指向某一个文档树的。<br/>
+		第32行，通过TWebBrowser的Document方法获取IDispatch接口，然后用as转化为IHTMLDocument2接口。<br/>
+		第33行，使用IHTMLDocument2下的title属性来访问该文档树的标题。</p>
+		
+		<p class="example">例3：在例2的基础上添加代码，使得页面载入完全后自动修改百度主页的按钮“百度一下”为“Sakuras一下”。</p>
+		<p class="explain">解释：本例涉及的技术点有2个。一个是如何判断页面已经载入完全，另一个是如何访问DOM下面包含的某一个元素。</p>
+		<p>要操作页面上的元素，我们就有必要分析页面的结构，通过Chrome开发人员工具（IE也有类似的）分析发现，“百度一下”这个input元素有一个id为su。对于这种有id的元素，我们利用item方法可以十分方便的找到它。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>在例2的基础上，添加一个TWebBrowser的OnDocumentComplete事件</li>
+			<li>在WebBrowser1DocumentComplete事件里编写代码实现功能。</li>
+		</ol>
+		<p class="title">IHTMLDocument2Example3/Unit1.pas</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+procedure TForm1.WebBrowser1DocumentComplete(ASender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+var
+  vDoc: IHTMLDocument2;
+  vEle: IHTMLElement;
+begin
+  vDoc := WebBrowser1.Document as IHTMLDocument2;
+  vEle := vDoc.all.item('su', 0) as IHTMLElement;
+  vEle.setAttribute('value', 'Sakuras一下', 0);
+end;
+			</textarea>
+		</div>
+		<p>第5行，声明一个IHTMLElement接口，该接口是用于指向页面中某一个元素的。<br/>
+		第8行，调用all方法，获得一个该DOM下元素的全集。然后调用item方法。item方法第一个参数指定ID或者Name，第二个参数指定序号。即获取ID或者Name为su的元素的全集，然后返回其中序号为0的那一个（即第一个）。<br/>
+		第9行，调用setAttribute方法。第一个参数指定要编辑的属性，第二个指定要修改为的值，第三个是个Flag，取0即可。</p>
+		<p>整个过程在DocumentComplete事件下完成，当浏览器完全载入一个页面时，就会抛出一个DocumentComplete事件，我们在这个事件下写代码，可以确保此时页面已经载入完全。</p>
+		<p>类似给接口赋值的方法（vEle := vDoc.all.item('su',0) as IHTMLElement;），万一此时页面并未载入完整，该元素尚未生成，则会在运行时抛出内存访问错误。</p>
+
+		<p class="summary">好啦，这一节就到这里，我们来总结一下：</p>
+		<ul class="summary">
+			<li>IHTMLDocument2是用来访问页面DOM结构的接口，配合其他接口可以实现页面的完全控制（IHTMLElement等）。</li>
+			<li>例1里学习了如何使用TWebBrowser来给程序中嵌入网页。</li>
+			<li>例2里学习了如何获取IHTMLDocument2接口，以及如何访问DOM下的title的属性。</li>
+			<li>例3里学习了如何获取有某一个特定id或者name的元素（IHTMLElement接口），并且修改它的某一个属性值。</li>
+		</ul>
+		<div class="bpn">
+			<div class="pre" style="display:none"></div>
+			<div class="next" onclick="subFrameNav('IHTMLDocument2', 2)"></div>
+		</div>
+	</body>
+</html>

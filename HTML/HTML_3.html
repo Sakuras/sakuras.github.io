@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HTML_3</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>根据上下文访问元素节点</h1>
+		<p>通过上一节的学习，我们几乎可以访问到页面文档里所有的元素节点了。但是有时候，当我们已知某一个节点，想要访问它附近的节点的时候。显然有一些更快捷的方法。</p>
+
+		<p class="example">例4：有如下页面，填写相应test函数体，执行后能更改kisaragi Sakuras的余额为255。</p>
+		<p>
+			<img src="../images/HTMLExample4Image1.png" />
+		</p>
+		<p class="title">HTMLExample4.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>访问子节点</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript">
+      function test()
+      {
+        var oTr = document.getElementById("keyElement");
+        //待补完（つづく）
+      }
+    </script>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td>账号</td>
+        <td>昵称</td>
+        <td>最喜欢的人</td>
+        <td>余额</td>
+      </tr>
+      <tr>
+        <td>001</td>
+        <td>kashiwazaki sena</td>
+        <td>Sakuras</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td>002</td>
+        <td>mikatsuki yozora</td>
+        <td>Sakuras</td>
+        <td>200</td>
+      </tr>
+      <tr>
+        <td>003</td>
+        <td>hasegawa kobato</td>
+        <td>Sakuras</td>
+        <td>50</td>
+      </tr>
+      <tr id="keyElement">
+        <td>004</td>
+        <td>kisaragi Sakuras</td>
+        <td>yozora</td>
+        <td>80</td>
+      </tr>
+    </table>
+
+    <input type="button" value="点我执行js" onclick="test();" />
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p class="explain">解释：本例已经获取到了tr元素，接下来只要利用tr找到它的子节点td即可。介绍使用childNodes属性。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>获取tr的子节点集合。</li>
+			<li>获取相应的td元素节点。</li>
+			<li>修改该节点的innerText属性。</li>
+		</ol>
+		<p class="title">HTMLExample4.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+function test()
+{
+  var oTr = document.getElementById("keyElement");
+  //待补完（つづく）
+  oTr.childNodes[7].innerText = "255";
+}
+			</textarea>
+		</div>
+		<p>childNodes方法可以获取到子节点的集合，然后用数组下标的方式即可访问到相应序列号的元素了。</p>
+		<p>要注意的是，余额td对应的序列号不是3，而是7。因为有文本节点的存在，我们来看一下Chrome下给出的tr子元素集合。</p>
+		<p>
+			<img src="../images/HTMLExample4Image2.png" />
+		</p>
+		<p>也就是说tr一共有9个子元素，每个td之间都有一个文本节点。</p>
+		<p>这样的文本节点，在源码里并未表示出来，但它是确实存在的。请不要忘记了它们。</p>
+		<p>类似的情况在table下面也有，我们来看一下Chrome下给出的table子元素集合。</p>
+		<p>
+			<img src="../images/HTMLExample4Image3.png" />
+		</p>
+		<p>可以看到，table不仅前面有一个文本元素，后面还有一个tbody元素。这个也是未在源码中出现的。</p>
+		<p>关于tbody元素的由来，这里不作展开，但你可以狠狠的点后面的链接。<a target="_blank" href="http://www.w3school.com.cn/tags/tag_tbody.asp">tbody元素介绍</a></p>
+
+		<p class="example">例5：在例4给出的页面中，填写相应test函数体，执行后能给table加上一个萌萌的边框（1px solid blue)。</p>
+		<p class="explain">解释：这回是要根据tr来访问父元素了。介绍使用parentNode属性。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>获取tr的父元素tbody。</li>
+			<li>获取tbody的父元素table。</li>
+			<li>给它加上萌萌的边框。</li>
+		</ol>
+		<p class="title">HTMLExample5.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+function test()
+{
+  var oTr = document.getElementById("keyElement");
+  //待补完（つづく）
+  oTr.parentNode.parentNode.setAttribute("style", "border:1px solid blue");
+}
+			</textarea>
+		</div>
+		<p>这里出现了一个setAttribute的方法，第一个参数是属性名，第二个是属性值。这样就给动态修改了table的内联css，从而实现了边框效果。</p>
+		<p>有些童鞋要说，parentElement不是也可以得到父元素么？为咩要用parentNode呢？我得说，忘掉前面那个方法吧，他不在W3C标准里面。</p>
+		<p>有些童鞋又要说，style.border = "1px solid blue" 不是也能加边框么？我得说，这个随意，爱用哪个用哪个。</p>
+
+		<p class="summary">好啦，这一节就到这里，我们来总结一下：</p>
+		<ul class="summary">
+			<li>childNodes属性用于获取子节点集合。</li>
+			<li>parentNode用于获取父节点。</li>
+			<li>有一些源码里没有，但是实际存在的东东要注意。</li>
+		</ul>
+		<div class="bpn">
+			<div class="pre" onclick="subFrameNav('HTML', 2)"></div>
+			<div class="next" onclick="subFrameNav('HTML', 4)"></div>
+		</div>
+	</body>
+</html>

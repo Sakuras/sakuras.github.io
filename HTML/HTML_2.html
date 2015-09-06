@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HTML_2</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="../style/MainFrameCss.css" />
+		<script src="../Js/MainFrameJs.js"></script>
+	</head>
+	<body onload="init();">
+		<h1>HTMLDocument对象介绍</h1>
+		<p>HTMLDocument对象就是页面的文档节点。想要获取这个对象很简单，一句Document就ok了。</p>
+		<p>这个对象提供了很多方法用于访问页面内的元素，我们来一一介绍。</p>
+
+		<p class="example">例2：有如下页面，填写相应test函数体，执行后能更改id为Sakuras的元素的value为“一个id最多只能对应一个元素”。</p>
+		<p>
+			<img src="../images/HTMLExample2Image1.png" />
+		</p>
+		<p class="title">HTMLExample2.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>页面内特定id元素的访问</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript">
+      function test()
+      {
+        //待补完（つづく）
+      }
+    </script>
+  </head>
+  <body>
+    <input id="Sakuras" type="text" value="我的id是Sakuras" style="Width:200px" /><br/>
+    <input name="Sakuras" type="text" value="我的name是Sakuras" style="Width:200px" /><br/>
+    <input name="Sakuras" type="text" value="我的name是Sakuras" style="Width:200px" /><br/>
+    <input name="Sakuras" type="text" value="我的name是Sakuras" style="Width:200px" /><br/>
+    <input class="Sakuras" type="text" value="我的className是Sakuras" style="Width:200px" /><br/>
+    <input class="Sakuras" type="text" value="我的className是Sakuras" style="Width:200px" /><br/>
+    <input class="Sakuras" type="text" value="我的className是Sakuras" style="Width:200px" /><br/>
+    <input type="text" value="我的tagName是input" style="Width:200px" /><br/>
+    <input type="text" value="我的tagName是input" style="Width:200px" /><br/>
+    <input type="text" value="我的tagName是input" style="Width:200px" /><br/>
+
+    <input type="button" value="点我执行js" onclick="test();" />
+  </body>
+</html>
+			</textarea>
+		</div>
+		<p class="explain">解释：本例将介绍使用getElementById方法。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>找到文档节点（HTMLDocument对象）。</li>
+			<li>找到id为Sakuras的元素节点。</li>
+			<li>修改它的value属性。</li>
+		</ol>
+		<p class="title">HTMLExample2.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+function test()
+{
+  //待补完（つづく）
+  document.getElementById("Sakuras").value = "一个id最多只能对应一个元素";
+}
+			</textarea>
+		</div>
+		<p>代码只有一行，我们来分析一下。</p>
+		<p>首先一个document获取到文档节点，然后调用getElementById方法获取到元素节点，再调用value来直接修改它的属性。</p>
+		<p>同一个页面文档中，不允许有相同id的元素出现，也就是说，一个id最多只能对应一个元素。当然不排除一个不规范的页面会乱写。</p>
+		
+		<p class="example">例3：在例2的页面中，填写相应test函数体，执行后能更改第2个name为Sakuras的元素的value为“一个name可以对应多个元素”。</p>
+		<p class="explain">解释：本例将介绍使用getElementsByName方法。</p>
+		<p class="step">步骤：</p>
+		<ol class="step">
+			<li>找到文档节点（HTMLDocument对象）。</li>
+			<li>找到name为Sakuras的元素节点集合。</li>
+			<li>找到集合中的第二个元素。</li>
+			<li>修改它的value属性。</li>
+		</ol>
+		<p class="title">HTMLExample3.html</p>
+		<div class="codes">
+			<div class="lineNum">
+				<pre></pre>
+			</div>
+			<textarea readonly="readonly" onScroll="lineNumDivScrollTo(this);">
+function test()
+{
+  //待补完（つづく）
+  document.getElementsByName("Sakuras")[1].value = "一个name可以对应多个元素";
+}
+			</textarea>
+		</div>
+		<p>由于name可以对应多个元素，因此getElement<span>s</span>ByName获得的是一个集合，我们还需要通过数组下标的方式获取到具体的元素。</p>
+		<p>与getElementsByName类似的还有getElementsByTagName，getElementsByClassName。关于这俩个方法，就不具体介绍了。</p>
+
+		<p class="summary">好啦，这一节就到这里，我们来总结一下：</p>
+		<ul class="summary">
+			<li>document用于获取文档节点（HTMLDocument对象）。</li>
+			<li>getElementById用于获取特定id的元素。</li>
+			<li>getElementsByName用于获取特定name的元素的集合。</li>
+			<li>getElementsByClassName用于获取特定className的元素的集合。</li>
+			<li>getElementsByTagName用于获取特定tagName的元素的集合。</li>
+		</ul>
+		<p class="exercise">练习1：在例2的页面中，填写相应的test函数体，执行后能更改所有的className为Sakuras的元素的value为“并非所有浏览器都支持getElementsByClassName方法”。</p>
+		<div class="bpn">
+			<div class="pre" onclick="subFrameNav('HTML', 1)"></div>
+			<div class="next" onclick="subFrameNav('HTML', 3)"></div>
+		</div>
+	</body>
+</html>

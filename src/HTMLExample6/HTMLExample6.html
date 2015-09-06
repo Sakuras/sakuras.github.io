@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>访问子框架下的节点</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript">
+      function test()
+      {
+        //待补完（つづく）
+        var vDoc = document.getElementById("testFrame").contentDocument;
+        vDoc.getElementsByTagName("input")[0].click();
+      }
+    </script>
+  </head>
+  <body>
+    <iframe name="testFrame" id="testFrame" width="400px" height= "200px" src="./iframe.html"></iframe>
+    <br/><input type="button" value="点我执行js" onclick="test();" />
+  </body>
+</html>
