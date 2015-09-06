@@ -60,6 +60,9 @@ body{
 .red{
 	color:red;
 }
+.del{
+	text-decoration: line-through;
+}
 a{
 	text-decoration:none;
 }
