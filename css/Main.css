@@ -1,0 +1,107 @@
+body{
+    width: 1000px;
+	margin: auto;
+}
+
+header{
+	width: 98%;
+	height: 100px;
+	margin: 1%;
+	margin-bottom: 0px;
+	float:left;
+	border-radius: 10px;
+	background-color:cornflowerblue;
+	box-shadow: 5px 5px 5px #888888;
+}
+header p{
+	line-height: 100px;
+	margin: auto;
+	float: left;
+}
+
+#logo{
+	float: left;
+}
+#logo:hover{
+	transform: skewX(-15deg);
+	transition: 0.3s;
+}
+
+aside{
+	width: 19%;
+	height: 740px;
+	margin: 1%;
+	margin-right: 0px;
+	float: left;
+	border-radius: 10px;
+	background-color:lightsteelblue;
+	box-shadow: 5px 5px 5px #888888;
+}
+aside ul{
+	width: 94%;
+	margin: auto;
+	padding: 3%;
+	list-style: none;
+	overflow: auto;
+}
+aside li{
+	width: 90%;
+	margin: 2%;
+	padding: 3%;
+	overflow: auto;
+	border-radius: 10px;
+}
+aside li:hover{
+	cursor:pointer;
+	background-color:cornflowerblue;
+}
+aside img{
+	width: 25px;
+	height: 25px;
+	float: left;
+}
+aside p{
+	margin: auto;
+	margin-left: 2ex;
+	line-height: 25px;
+	float: left;
+}
+
+main{
+	width: 74%;
+	height: 700px;
+	margin: 1%;
+	padding: 2%;
+	float: left;
+	border-radius: 10px;
+	background-color:aliceblue;
+	box-shadow: 5px 5px 5px #888888;
+}
+main ul{
+	width: 94%;
+	margin: auto;
+	padding: 3%;
+	list-style: none;
+	overflow: auto;
+}
+main li{
+	width: 23%;
+	padding: 1%;
+	float: left;
+	overflow: auto;
+	text-align: center;
+}
+main img{
+	width: 100px;
+	height: 100px;
+}
+main li p:first-of-type{
+	font-weight: bold;
+}
+main li p:last-of-type{
+	font-size:small
+}
+main li:hover{
+	cursor:pointer;
+	background-color:cornflowerblue;
+}
